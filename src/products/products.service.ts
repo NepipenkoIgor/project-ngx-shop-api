@@ -15,6 +15,7 @@ export class ProductsService {
     brands: string | undefined
   ): Promise<IProduct[]> {
     let brandsArray: string[] = [];
+    let regExpBrandsArray: RegExp[] = [];
     let queryBrands: Object = {};
     let querySubCat: Object = {};
     let queryComparePrices: Object = {};
@@ -23,7 +24,7 @@ export class ProductsService {
       brandsArray = brands.split(',');
     }
     if (brandsArray) {
-      brandsArray.map((e: string) => new RegExp(e, 'i'));
+      regExpBrandsArray = brandsArray.map((e: string) => new RegExp(e, 'i'));
     }
     if (subCat) {
       querySubCat = { subCategory: Types.ObjectId(subCat) };
@@ -36,15 +37,15 @@ export class ProductsService {
         },
       };
     }
-    if (brandsArray && brandsArray.length > 0) {
-      queryBrands = { brand: { $in: brandsArray } } || {};
+    if (regExpBrandsArray && regExpBrandsArray.length > 0) {
+      queryBrands = { brand: { $in: regExpBrandsArray } } || {};
     }
     if (text) {
       querySearch = { name: { $regex: text || '', $options: 'i' } };
     }
     return this.productModel
       .find({
-        $and: [querySubCat, querySearch, queryComparePrices, queryBrands],
+        $and: [queryBrands, querySubCat, querySearch, queryComparePrices],
       })
       .limit(10);
   }

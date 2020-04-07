@@ -1,5 +1,5 @@
 import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ProductsService } from './products.service';
 import { IProduct } from './interfaces/product.interface';
@@ -18,6 +18,10 @@ export class ProductsController {
     description: 'Server error  find',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
+  @ApiQuery({ name: 'subCat', required: false, description: 'Subcategory ID' })
+  @ApiQuery({ name: 'text', required: false, description: 'Search by name' })
+  @ApiQuery({ name: 'prices', required: false, description: '100,500' })
+  @ApiQuery({ name: 'brands', required: false, description: 'apple,samsung' })
   public async findProducts(
     @Res() res: Response,
     @Query('subCat') subCat: string | undefined,
