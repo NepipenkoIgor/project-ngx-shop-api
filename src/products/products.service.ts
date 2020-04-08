@@ -5,8 +5,7 @@ import { Model, Types } from 'mongoose';
 @Injectable()
 export class ProductsService {
   public constructor(
-    // tslint:disable-next-line: no-any
-    @InjectModel('Products') private readonly productModel: Model<any>
+    @InjectModel('Products') private readonly productModel: Model<IProduct>
   ) {}
   public async findProdcuts(
     subCat: string | undefined,
@@ -44,9 +43,38 @@ export class ProductsService {
       querySearch = { name: { $regex: text || '', $options: 'i' } };
     }
     return this.productModel
-      .find({
-        $and: [queryBrands, querySubCat, querySearch, queryComparePrices],
-      })
-      .limit(10);
+      .aggregate([
+        {
+          $match: {
+            $and: [queryBrands, querySubCat, querySearch, queryComparePrices],
+          },
+        },
+        {
+          $lookup: {
+            as: 'feedbacks',
+            foreignField: 'product',
+            from: 'feedbacks',
+            localField: '_id',
+          },
+        },
+        { $unwind: { path: '$feedbacks', preserveNullAndEmptyArrays: true } },
+        {
+          $group: {
+            _id: '$_id',
+            feedbacksCount: {
+              $sum: {
+                $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
+              },
+            },
+            images: { $first: '$images' },
+            name: { $first: '$name' },
+            price: { $first: '$price' },
+            rating: { $avg: '$feedbacks.rate' },
+            status: { $first: '$status' },
+          },
+        },
+      ])
+      .limit(10)
+      .allowDiskUse(true);
   }
 }
