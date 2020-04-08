@@ -1,5 +1,5 @@
 import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ProductsService } from './products.service';
 import { IProduct } from './interfaces/product.interface';
