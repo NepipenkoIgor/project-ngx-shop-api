@@ -56,6 +56,7 @@ async function loadSubCategories(dbo: any, subCategories: any, spinner: any) {
   try{
     for (const subCategory of subCategories) {
       subCategory._id = mongoose.Types.ObjectId(subCategory._id);
+      subCategory.category =  mongoose.Types.ObjectId(subCategory.category);
       await dbo.collection('subCategories').insertOne(subCategory);
     }
   } catch(e){
