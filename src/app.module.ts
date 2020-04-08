@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
     }),
     ProductsModule,
     FeedbacksModule,
+    CategoriesModule,
   ],
 
   controllers: [],
