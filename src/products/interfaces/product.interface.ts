@@ -1,5 +1,6 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 export interface IProduct extends Document {
+  _id: Types.ObjectId;
   description: string;
   brand?: string;
   characteristics?: ICharacteristic[];

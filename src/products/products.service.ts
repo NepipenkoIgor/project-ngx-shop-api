@@ -2,6 +2,7 @@ import { IProduct } from './interfaces/product.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { IProductQuery } from './interfaces/product-query.interface';
 @Injectable()
 export class ProductsService {
   public constructor(
@@ -11,14 +12,20 @@ export class ProductsService {
     subCat: string | undefined,
     text: string | undefined,
     prices: string | undefined,
-    brands: string | undefined
-  ): Promise<IProduct[]> {
+    brands: string | undefined,
+    page: number,
+    limit: number
+  ): Promise<[IProduct[], {}]> {
+    let skip: number = 0;
+    limit = limit === 0 ? 10 : limit;
+    page = page === 0 ? 1 : page;
+    skip = page * limit;
     let brandsArray: string[] = [];
     let regExpBrandsArray: RegExp[] = [];
-    let queryBrands: Object = {};
-    let querySubCat: Object = {};
-    let queryComparePrices: Object = {};
-    let querySearch: Object = {};
+    let queryBrands: Partial<IProductQuery> = {};
+    let querySubCat: Partial<IProductQuery> = {};
+    let queryComparePrices: Partial<IProductQuery> = {};
+    let querySearch: Partial<IProductQuery> = {};
     if (brands) {
       brandsArray = brands.split(',');
     }
@@ -42,7 +49,15 @@ export class ProductsService {
     if (text) {
       querySearch = { name: { $regex: text || '', $options: 'i' } };
     }
-    return this.productModel
+    const totalPages: number = await this.productModel.count({});
+
+    const pagination: {} = {
+      currentPage: page,
+      totalPages: Math.ceil(totalPages / limit),
+      nextPage:
+        page && page < Math.ceil(totalPages / limit) ? page && page + 1 : 0,
+    };
+    const products: IProduct[] = await this.productModel
       .aggregate([
         {
           $match: {
@@ -76,8 +91,10 @@ export class ProductsService {
           },
         },
       ])
-      .limit(10)
+      .skip(skip)
+      .limit(limit)
       .allowDiskUse(true);
+    return [products, pagination];
   }
   public async findProdcut(_id: string): Promise<IProduct[]> {
     return this.productModel.aggregate([

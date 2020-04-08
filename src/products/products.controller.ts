@@ -1,8 +1,9 @@
-import { Controller, Get, HttpStatus, Query, Res, Param } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ProductsService } from './products.service';
 import { IProduct } from './interfaces/product.interface';
+import { ParseInt } from './parse-int.pipe';
 
 @ApiTags('products')
 @Controller('products')
@@ -22,21 +23,33 @@ export class ProductsController {
   @ApiQuery({ name: 'text', required: false, description: 'Search by name' })
   @ApiQuery({ name: 'prices', required: false, description: '100,500' })
   @ApiQuery({ name: 'brands', required: false, description: 'apple,samsung' })
+  @ApiQuery({ name: 'page', required: false, description: 'Number page' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Limit items' })
   public async findProducts(
     @Res() res: Response,
     @Query('subCat') subCat: string | undefined,
     @Query('text') text: string | undefined,
     @Query('prices') prices: string | undefined,
-    @Query('brands') brands: string | undefined
+    @Query('brands') brands: string | undefined,
+    @Query('page', new ParseInt()) page: number,
+    @Query('limit', new ParseInt()) limit: number
   ): Promise<Response> {
     try {
-      const products: IProduct[] = await this.productsService.findProdcuts(
+      const products: [
+        IProduct[],
+        {}
+      ] = await this.productsService.findProdcuts(
         subCat,
         text,
         prices,
-        brands
+        brands,
+        page,
+        limit
       );
-      return res.status(HttpStatus.OK).json({ data: products, error: null });
+      return res.status(HttpStatus.OK).json({
+        data: { items: products[0], pagination: products[1] },
+        error: null,
+      });
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);
