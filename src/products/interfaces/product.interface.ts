@@ -1,13 +1,13 @@
 import { Document } from 'mongoose';
 export interface IProduct extends Document {
   description: string;
-  brand: string;
-  characteristics: ICharacteristic[];
+  brand?: string;
+  characteristics?: ICharacteristic[];
   images: IImage[];
   name: string;
   price: number;
   status: number;
-  subCategory: string;
+  subCategory?: string;
   feedbacksCount?: number;
   rating?: number;
 }
