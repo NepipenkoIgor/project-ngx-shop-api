@@ -1,12 +1,15 @@
-export interface IProduct {
+import { Document } from 'mongoose';
+export interface IProduct extends Document {
   description: string;
   brand: string;
   characteristics: ICharacteristic[];
   images: IImage[];
   name: string;
-  pric: number;
+  price: number;
   status: number;
   subCategory: string;
+  feedbacksCount?: number;
+  rating?: number;
 }
 
 interface IImage {
