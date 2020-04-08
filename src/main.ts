@@ -2,11 +2,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 
 // tslint:disable-next-line:typedef
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    })
+  );
   // tslint:disable-next-line: typedef
   const options = new DocumentBuilder()
     .setTitle('Ngx-shop-API')
