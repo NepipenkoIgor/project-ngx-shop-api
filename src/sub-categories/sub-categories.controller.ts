@@ -1,16 +1,13 @@
 import { SubCategoriesService } from './sub-categories.service';
 import {
-  Body,
   Controller,
   Get,
   HttpStatus,
   Param,
-  Put,
   Res
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { SubCategotyDto } from './sub-categories.dto';
 
 @ApiTags('subcategories')
 @Controller('subcategories')
@@ -18,10 +15,9 @@ export class SubCategoriesController {
   public constructor(private subCategoriesService: SubCategoriesService) {}
 
   @Get('')
-  @Put(':id')
-  @ApiOperation({ description: 'Update sub category by id' })
+  @ApiOperation({ description: 'Get subcategories' })
   @ApiResponse({
-    description: 'Sub category was successfully updated',
+    description: 'Subcategories was successfully got',
     status: HttpStatus.OK,
   })
   @ApiResponse({
@@ -29,21 +25,22 @@ export class SubCategoriesController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   // tslint:disable-next-line: typedef
-  public async updateSubCategory(
-    @Body() subCategory: SubCategotyDto,
-    // tslint:disable-next-line:no-any
+  public async showSubCategory(
+    // tslint:disable-next-line: no-any
     @Param() param: any,
+    // tslint:disable-next-line: no-any
+    @Param() subCat: any,
     @Res() res: Response
   ) {
     try {
       // tslint:disable-next-line: typedef
-      const updatedSubCategory = await this.subCategoriesService.updateSubCategory(
+      const foundSubCategory = await this.subCategoriesService.showSubCategory(
         param.id,
-        subCategory.name
+        subCat.name
       );
       return res
         .status(HttpStatus.OK)
-        .json({ data: updatedSubCategory, error: null });
+        .json({ data: foundSubCategory, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

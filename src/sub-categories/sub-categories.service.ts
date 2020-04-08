@@ -9,7 +9,7 @@ export class SubCategoriesService {
     @InjectModel('SubCategories') private readonly subCategoryModel: Model<any>  ) {}
 
   // tslint:disable-next-line: typedef
-  public async updateSubCategory(id: string, name: string) {
+  public async showSubCategory(id: string, name: string) {
     return await this.subCategoryModel.findOneAndUpdate(
       { _id: Types.ObjectId(id) },
       { $set: { name } }
