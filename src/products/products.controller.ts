@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Query, Res, Param } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ProductsService } from './products.service';
@@ -40,6 +40,29 @@ export class ProductsController {
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ data: null, error });
+    }
+  }
+  @Get(':id')
+  @ApiOperation({ description: 'Get one product by id' })
+  @ApiResponse({
+    description: 'Got one product by id ',
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    description: 'Server error  find',
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  public async findProduct(
+    @Res() res: Response,
+    @Param('id') param: string
+  ): Promise<Response> {
+    try {
+      const product: IProduct[] = await this.productsService.findProdcut(param);
+      return res.status(HttpStatus.OK).json({ data: product[0], error: null });
+    } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });

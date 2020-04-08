@@ -69,12 +69,50 @@ export class ProductsService {
             images: { $first: '$images' },
             name: { $first: '$name' },
             price: { $first: '$price' },
-            rating: { $avg: '$feedbacks.rate' },
+            rating: {
+              $avg: { $cond: [{ $ifNull: ['$feedbacks.rate', null] }, 1, 0] },
+            },
             status: { $first: '$status' },
           },
         },
       ])
       .limit(10)
       .allowDiskUse(true);
+  }
+  public async findProdcut(_id: string): Promise<IProduct[]> {
+    return this.productModel.aggregate([
+      { $match: { _id: Types.ObjectId(_id) } },
+      {
+        $lookup: {
+          as: 'feedbacks',
+          foreignField: 'product',
+          from: 'feedbacks',
+          localField: '_id',
+        },
+      },
+      { $unwind: { path: '$feedbacks', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$_id',
+          description: { $first: '$description' },
+          feedbacks: { $push: '$feedbacks' },
+          feedbacksCount: {
+            $sum: {
+              $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
+            },
+          },
+          images: { $first: '$images' },
+          name: { $first: '$name' },
+          price: { $first: '$price' },
+          rating: {
+            $avg: { $cond: [{ $ifNull: ['$feedbacks.rate', null] }, 1, 0] },
+          },
+          status: { $first: '$status' },
+          subCategory: { $first: '$subCategory' },
+          characteristics: { $first: '$characteristics' },
+          brand: { $first: '$brand' },
+        },
+      },
+    ]);
   }
 }
