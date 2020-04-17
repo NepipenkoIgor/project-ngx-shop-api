@@ -6,7 +6,9 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 
 // tslint:disable-next-line:typedef
 async function bootstrap() {
-  const app: INestApplication = await NestFactory.create(AppModule);
+  const app: INestApplication = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
