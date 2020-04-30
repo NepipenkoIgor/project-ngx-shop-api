@@ -46,6 +46,7 @@ export class ProductsController {
         page,
         limit
       );
+      // tslint:disable-next-line: no-console
       return res.status(HttpStatus.OK).json({
         data: { items: products[0], pagination: products[1] },
         error: null,

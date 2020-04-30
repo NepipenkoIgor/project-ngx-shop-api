@@ -5,14 +5,6 @@ export const feedbackSchema: mongoose.Schema = new mongoose.Schema({
     required: false,
     type: String,
   },
-  description: {
-    required: true,
-    type: String,
-  },
-  limitations: {
-    required: false,
-    type: String,
-  },
   product: {
     required: true,
     type: mongoose.Schema.Types.ObjectId,

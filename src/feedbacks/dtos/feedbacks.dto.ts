@@ -10,8 +10,4 @@ export class FeedbackDto {
   public readonly rate!: number;
   @ApiPropertyOptional()
   public readonly advantages?: string;
-  @ApiPropertyOptional()
-  public readonly limitations?: string;
-  @ApiProperty()
-  public readonly description!: string;
 }

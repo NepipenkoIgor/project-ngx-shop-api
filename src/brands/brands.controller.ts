@@ -24,18 +24,15 @@ export class BrandsController {
   })
   public async findCategories(
       @Res() res: Response,
-      @Query('id') id: string | undefined,
-      ): Promise<Response> {
+      @Query('subCat') id: string | undefined,
+      @Query('prices') prices: string | undefined,
+    ): Promise<Response> {
     try {
         let brands: string[] = [];
         // tslint:disable-next-line: typedef
-        const product = (await this.productsService.findProdcuts(id, undefined, undefined, undefined, 0, 0));
-
-
+        const product = (await this.productsService.findProdcuts(id, undefined, prices, undefined, 0, 0));
         // tslint:disable-next-line: no-any
         const ids: string[] = product[0].map( (item: any) => String(item._id));
-
-
         // tslint:disable-next-line: typedef
         for ( let index = 0; index < ids.length; index++ ) {
            // tslint:disable-next-line: no-any
