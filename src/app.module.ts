@@ -1,3 +1,4 @@
+import { BrandsModule } from './brands/brands.module';
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -23,6 +24,7 @@ import { CategoriesModule } from './categories/categories.module';
     ProductsModule,
     FeedbacksModule,
     CategoriesModule,
+    BrandsModule
   ],
 
   controllers: [],
