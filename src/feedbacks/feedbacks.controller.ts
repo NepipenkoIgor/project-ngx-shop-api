@@ -26,7 +26,6 @@ export class FeedbacksController {
       const createdFeedback: IFeedback = await this.feedbacksService.createFeedback(
         feedback
       );
-      console.log('feedback1111111111', feedback);
       return res
         .status(HttpStatus.OK)
         .json({ data: createdFeedback, error: null });
