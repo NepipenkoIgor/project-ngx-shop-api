@@ -12,7 +12,6 @@ const main = async() =>{
         for(let key of subCategories){
             key.category = mongoose.Types.ObjectId(key._id);
         }
- console.log(subCategories);
 
 };
 main();
