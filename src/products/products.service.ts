@@ -8,6 +8,43 @@ export class ProductsService {
   public constructor(
     @InjectModel('Products') private readonly productModel: Model<IProduct>
   ) {}
+
+  public async suggestedProdcuts(
+  ): Promise<[IProduct[]]> {
+    const products: IProduct[] = await this.productModel
+      .aggregate([
+        {
+          $lookup: {
+            as: 'feedbacks',
+            foreignField: 'product',
+            from: 'feedbacks',
+            localField: '_id',
+          },
+        },
+        { $unwind: { path: '$feedbacks', preserveNullAndEmptyArrays: true } },
+        {
+          $group: {
+            _id: '$_id',
+            feedbacksCount: {
+              $sum: {
+                $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
+              },
+            },
+            images: { $first: '$images' },
+            name: { $first: '$name' },
+            price: { $first: '$price' },
+            rating: {
+              $avg: { $cond: [{ $ifNull: ['$feedbacks.rate', null] }, 1, 0] },
+            },
+            status: { $first: '$status' },
+          },
+        },
+        { $sample: { size: 9} }
+ 
+      ])
+      .allowDiskUse(true);
+    return [products];
+  }
   public async findProdcuts(
     subCat: string | undefined,
     text: string | undefined,
