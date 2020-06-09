@@ -7,7 +7,7 @@ import { IProduct } from './interfaces/product.interface';
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-  public constructor(private readonly productsService: ProductsService) {}
+  public constructor(private readonly productsService: ProductsService) { }
   @Get('')
   @ApiOperation({ description: 'Get products' })
   @ApiResponse({
@@ -22,8 +22,7 @@ export class ProductsController {
   @ApiQuery({ name: 'text', required: false, description: 'Search by name' })
   @ApiQuery({ name: 'prices', required: false, description: '100,500' })
   @ApiQuery({ name: 'brands', required: false, description: 'apple,samsung' })
-  @ApiQuery({ name: 'page', required: false, description: 'Number page' })
-  @ApiQuery({ name: 'limit', required: false, description: 'Limit items' })
+
   public async findProducts(
     @Res() res: Response,
     @Query('subCat') subCat: string | undefined,
@@ -43,9 +42,10 @@ export class ProductsController {
       );
       // tslint:disable-next-line: no-console
       return res.status(HttpStatus.OK).json({
-        data: { items: products[0]
+        data: {
+          items: products[0]
           , quantity: products[0].length
-         },
+        },
         error: null,
       });
     } catch (error) {
@@ -56,6 +56,34 @@ export class ProductsController {
         .json({ data: null, error });
     }
   }
+  @Get('/suggestion')
+  @ApiOperation({ description: 'Get suggested products' })
+  @ApiResponse({
+    description: 'Got suggested products ',
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    description: 'Server error  find',
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  public async findSuggestedProdcuts(
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const products: [IProduct[]] = await this.productsService.suggestedProdcuts();
+      return res.status(HttpStatus.OK).json({
+        data: products,
+        quattity: products.length
+        , error: null
+      });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ data: null, error });
+    }
+  }
+
+
   @Get(':id')
   @ApiOperation({ description: 'Get one product by id' })
   @ApiResponse({
