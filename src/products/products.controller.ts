@@ -31,10 +31,7 @@ export class ProductsController {
     @Query('brands') brands: string | undefined,
   ): Promise<Response> {
     try {
-      const products: [
-        IProduct[]
-
-      ] = await this.productsService.findProdcuts(
+      const products: [ IProduct[] ] = await this.productsService.findProdcuts(
         subCat,
         text,
         prices,
@@ -72,9 +69,11 @@ export class ProductsController {
     try {
       const products: [IProduct[]] = await this.productsService.suggestedProdcuts();
       return res.status(HttpStatus.OK).json({
-        data: products,
-        quattity: products.length
-        , error: null
+        data: {
+          items: products[0]
+          , quantity: products[0].length
+        },
+        error: null
       });
     } catch (error) {
       return res

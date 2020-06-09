@@ -11,17 +11,8 @@ export class ProductsService {
 
   public async suggestedProdcuts(
   ): Promise<[IProduct[]]> {
-    // let queryBrands: Partial<IProductQuery> = {};
-    // let querySubCat: Partial<IProductQuery> = {};
-    // let queryComparePrices: Partial<IProductQuery> = {};
-    // let querySearch: Partial<IProductQuery> = {};
     const products: IProduct[] = await this.productModel
       .aggregate([
-        // {
-        //   $match: {
-        //     $and: [queryBrands, querySubCat, querySearch, queryComparePrices],
-        //   },
-        // },
         {
           $lookup: {
             as: 'feedbacks',
@@ -48,8 +39,8 @@ export class ProductsService {
             status: { $first: '$status' },
           },
         },
-        {$sort: {feedbacksCount: -1}},
-        {$limit: 9}
+        { $sample: { size: 9} }
+ 
       ])
       .allowDiskUse(true);
     return [products];
