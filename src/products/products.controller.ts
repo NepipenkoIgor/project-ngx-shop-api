@@ -3,7 +3,6 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ProductsService } from './products.service';
 import { IProduct } from './interfaces/product.interface';
-import { ParseInt } from './parse-int.pipe';
 
 @ApiTags('products')
 @Controller('products')
@@ -31,24 +30,22 @@ export class ProductsController {
     @Query('text') text: string | undefined,
     @Query('prices') prices: string | undefined,
     @Query('brands') brands: string | undefined,
-    @Query('page', new ParseInt()) page: number,
-    @Query('limit', new ParseInt()) limit: number
   ): Promise<Response> {
     try {
       const products: [
-        IProduct[],
-        {}
+        IProduct[]
+
       ] = await this.productsService.findProdcuts(
         subCat,
         text,
         prices,
         brands,
-        page,
-        limit
       );
       // tslint:disable-next-line: no-console
       return res.status(HttpStatus.OK).json({
-        data: { items: products[0], pagination: products[1] },
+        data: { items: products[0]
+          , quantity: products[0].length
+         },
         error: null,
       });
     } catch (error) {
