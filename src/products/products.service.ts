@@ -13,13 +13,7 @@ export class ProductsService {
     text: string | undefined,
     prices: string | undefined,
     brands: string | undefined,
-    page: number,
-    limit: number
-  ): Promise<[IProduct[], {}]> {
-    let skip: number = 0;
-    limit = limit === 0 ? 10 : limit;
-    page = page === 0 ? 1 : page;
-    skip = page * limit;
+  ): Promise<[IProduct[]]> {
     let brandsArray: string[] = [];
     let regExpBrandsArray: RegExp[] = [];
     let queryBrands: Partial<IProductQuery> = {};
@@ -49,14 +43,6 @@ export class ProductsService {
     if (text) {
       querySearch = { name: { $regex: text || '', $options: 'i' } };
     }
-    const totalPages: number = await this.productModel.count({});
-
-    const pagination: {} = {
-      currentPage: page,
-      totalPages: Math.ceil(totalPages / limit),
-      nextPage:
-        page && page < Math.ceil(totalPages / limit) ? page && page + 1 : 0,
-    };
     const products: IProduct[] = await this.productModel
       .aggregate([
         {
@@ -91,10 +77,8 @@ export class ProductsService {
           },
         },
       ])
-      .skip(skip)
-      .limit(limit)
       .allowDiskUse(true);
-    return [products, pagination];
+    return [products];
   }
   public async findProdcut(_id: string): Promise<IProduct[]> {
     return this.productModel.aggregate([

@@ -8,7 +8,6 @@ import { ProductsService } from 'products/products.service';
 @Controller('brands')
 export class BrandsController {
   public constructor(
-      // private brandsService: BrandsService,
     private productsService: ProductsService
       ) {}
 
@@ -30,7 +29,8 @@ export class BrandsController {
     try {
         let brands: string[] = [];
         // tslint:disable-next-line: typedef
-        const product = (await this.productsService.findProdcuts(id, undefined, prices, undefined, 0, 0));
+        const product = (await this.productsService.findProdcuts(id, undefined, prices, undefined
+           ));
         // tslint:disable-next-line: no-any
         const ids: string[] = product[0].map( (item: any) => String(item._id));
         // tslint:disable-next-line: typedef
