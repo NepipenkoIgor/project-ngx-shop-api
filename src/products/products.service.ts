@@ -40,7 +40,7 @@ export class ProductsService {
           },
         },
         { $sample: { size: 9} }
- 
+
       ])
       .allowDiskUse(true);
     return [products];
