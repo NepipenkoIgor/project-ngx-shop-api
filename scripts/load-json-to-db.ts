@@ -82,11 +82,12 @@ async function loadProducts(db: Db, productsFileNames: string[], spinner: ora.Or
     for (let i: number = 0; i < productsFileNames.length; i++) {
       const products: any[] = await readJSON(`output/${productsFileNames[i]}`);
       for (const product of products) {
-        if (product.title) {
-          product._id = mongoose.Types.ObjectId(product._id);
-          product.subCategory = mongoose.Types.ObjectId(product.subCategory);
-          await db.collection('products').insertOne(product);
+        if (!product.name || !product.price || !product.description) {
+          continue;
         }
+        product._id = mongoose.Types.ObjectId(product._id);
+        product.subCategory = mongoose.Types.ObjectId(product.subCategory);
+        await db.collection('products').insertOne(product);
       }
     }
   } catch (e) {
