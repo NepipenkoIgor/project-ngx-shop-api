@@ -53,6 +53,7 @@ async function loadCategories(db: Db, categories: { name: string, _id: string }[
   console.log('\n Categories added');
 }
 
+// tslint:disable-next-line:max-line-length
 async function loadSubCategories(db: Db, subCategories: { name: string, _id: string, category: string }[], spinner: ora.Ora): Promise<void> {
   spinner.start();
   spinner.text = 'Loading subCategories';
@@ -72,7 +73,7 @@ async function loadSubCategories(db: Db, subCategories: { name: string, _id: str
   spinner.stop();
   // tslint:disable-next-line:no-console
   console.log('\n SubCategories added');
-};
+}
 
 async function loadProducts(db: Db, productsFileNames: string[], spinner: ora.Ora): Promise<void> {
   spinner.start();
@@ -81,6 +82,9 @@ async function loadProducts(db: Db, productsFileNames: string[], spinner: ora.Or
     for (let i: number = 0; i < productsFileNames.length; i++) {
       const products: any[] = await readJSON(`output/${productsFileNames[i]}`);
       for (const product of products) {
+        if (!product.name || !product.price || !product.description) {
+          continue;
+        }
         product._id = mongoose.Types.ObjectId(product._id);
         product.subCategory = mongoose.Types.ObjectId(product.subCategory);
         await db.collection('products').insertOne(product);
