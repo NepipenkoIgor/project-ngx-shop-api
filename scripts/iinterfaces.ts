@@ -56,7 +56,7 @@ export interface IProduct {
   description: string;
   brand: string;
   subCategory: mongoose.Types.ObjectId;
- characteristics: IBaseCharacteristics[];
+  characteristics: IBaseCharacteristics[];
   images: IBaseImage[];
   price: number;
   status: boolean;

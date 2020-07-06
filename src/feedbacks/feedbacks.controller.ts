@@ -3,6 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { FeedbacksService } from './feedbacks.service';
 import { FeedbackDto } from './dtos/feedbacks.dto';
+import { IProduct } from 'products/interfaces/product.interface';
 @ApiTags('feedbacks')
 @Controller('feedbacks')
 export class FeedbacksController {
@@ -22,8 +23,10 @@ export class FeedbacksController {
     @Res() res: Response
   ): Promise<Response> {
     try {
-      await this.feedbacksService.createFeedback(feedback);
-      return res.status(HttpStatus.OK).json({ data: null, error: null });
+      const product: IProduct[] = await this.feedbacksService.createFeedback(
+        feedback
+      );
+      return res.status(HttpStatus.OK).json({ data: product[0], error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
