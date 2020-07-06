@@ -9,8 +9,7 @@ export class ProductsService {
     @InjectModel('Products') private readonly productModel: Model<IProduct>
   ) {}
 
-  public async suggestedProdcuts(
-  ): Promise<[IProduct[]]> {
+  public async suggestedProdcuts(): Promise<[IProduct[]]> {
     const products: IProduct[] = await this.productModel
       .aggregate([
         {
@@ -34,13 +33,12 @@ export class ProductsService {
             name: { $first: '$name' },
             price: { $first: '$price' },
             rating: {
-              $avg: { $cond: [{ $ifNull: ['$feedbacks.rate', null] }, 1, 0] },
+              $avg: '$feedbacks.rate',
             },
             status: { $first: '$status' },
           },
         },
-        { $sample: { size: 9} }
-
+        { $sample: { size: 9 } },
       ])
       .allowDiskUse(true);
     return [products];
@@ -49,7 +47,7 @@ export class ProductsService {
     subCat: string | undefined,
     text: string | undefined,
     prices: string | undefined,
-    brands: string | undefined,
+    brands: string | undefined
   ): Promise<[IProduct[]]> {
     let brandsArray: string[] = [];
     let regExpBrandsArray: RegExp[] = [];
@@ -108,7 +106,7 @@ export class ProductsService {
             name: { $first: '$name' },
             price: { $first: '$price' },
             rating: {
-              $avg: { $cond: [{ $ifNull: ['$feedbacks.rate', null] }, 1, 0] },
+              $avg: '$feedbacks.rate',
             },
             status: { $first: '$status' },
           },
@@ -143,7 +141,7 @@ export class ProductsService {
           name: { $first: '$name' },
           price: { $first: '$price' },
           rating: {
-            $avg: { $cond: [{ $ifNull: ['$feedbacks.rate', null] }, 1, 0] },
+            $avg: '$feedbacks.rate',
           },
           status: { $first: '$status' },
           subCategory: { $first: '$subCategory' },

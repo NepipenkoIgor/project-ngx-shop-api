@@ -1,4 +1,3 @@
-import { IFeedback } from './interfaces/feedbacks.interface';
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -23,12 +22,8 @@ export class FeedbacksController {
     @Res() res: Response
   ): Promise<Response> {
     try {
-      const createdFeedback: IFeedback = await this.feedbacksService.createFeedback(
-        feedback
-      );
-      return res
-        .status(HttpStatus.OK)
-        .json({ data: createdFeedback, error: null });
+      await this.feedbacksService.createFeedback(feedback);
+      return res.status(HttpStatus.OK).json({ data: null, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
