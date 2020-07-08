@@ -1,4 +1,3 @@
-import { IFeedback } from './../src/feedbacks/interfaces/feedbacks.interface';
 import * as mongoose from 'mongoose';
 
 export interface IBaseCategory {
