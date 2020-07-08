@@ -61,8 +61,21 @@ export interface IProduct {
   price: number;
   status: boolean;
 }
+
+export interface IFeedbackFromJson {
+  rating: string;
+  text: string;
+  author: string;
+}
 export interface IJsonData {
   categories: IBaseCategory[];
   subcategories: IBaseSubcategory[];
   products: IBaseProduct[];
+}
+
+export interface IFeedback {
+  _id: mongoose.Types.ObjectId;
+  product: string;
+  rate: number;
+  advantages?: string;
 }
