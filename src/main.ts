@@ -3,12 +3,14 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import * as compression from 'compression';
 
 // tslint:disable-next-line:typedef
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule, {
     cors: true,
   });
+  app.use(compression());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
