@@ -1,3 +1,4 @@
+import { IFeedback } from './../src/feedbacks/interfaces/feedbacks.interface';
 import * as mongoose from 'mongoose';
 
 export interface IBaseCategory {
@@ -56,13 +57,26 @@ export interface IProduct {
   description: string;
   brand: string;
   subCategory: mongoose.Types.ObjectId;
- characteristics: IBaseCharacteristics[];
+  characteristics: IBaseCharacteristics[];
   images: IBaseImage[];
   price: number;
   status: boolean;
+}
+
+export interface IFeedbackFromJson {
+  rating: string;
+  text: string;
+  author: string;
 }
 export interface IJsonData {
   categories: IBaseCategory[];
   subcategories: IBaseSubcategory[];
   products: IBaseProduct[];
+}
+
+export interface IFeedback {
+  _id: mongoose.Types.ObjectId;
+  product: string;
+  rate: number;
+  advantages?: string;
 }
