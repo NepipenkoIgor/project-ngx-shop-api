@@ -12,8 +12,8 @@ const promisifiedFileRead: (
 const promisifiedReadDir: (
   filename: string
 ) => Promise<string[]> = util.promisify(fs.readdir);
-const dbPath: string =
-  'mongodb://JSDaddy:jsdaddy2018@ds229909.mlab.com:29909/heroku_4k4jx5rj';
+const dbPath: string = process.env.DATABASE_PATH as string;
+const dbName: string = process.env.DATABASE_NAME as string;
 
 async function main(): Promise<void> {
   const spinner: ora.Ora = ora('Loading').start();
@@ -23,7 +23,7 @@ async function main(): Promise<void> {
       dbPath,
       { useNewUrlParser: true }
     );
-    const db: Db = connection.db('heroku_4k4jx5rj');
+    const db: Db = connection.db(dbName);
 
     const categories: { name: string; _id: string }[] = await readJSON(
       'output/json-categories.json'

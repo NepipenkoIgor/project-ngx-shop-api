@@ -1,4 +1,4 @@
-import { IProduct, IFeedbackFromJson } from './iinterfaces';
+import { IProduct, IFeedbackFromJson } from './interfaces';
 import * as fs from 'fs';
 import * as util from 'util';
 import * as path from 'path';
@@ -12,8 +12,8 @@ const promisifiedFileRead: (
   filename: string
 ) => Promise<Buffer> = util.promisify(fs.readFile);
 
-const dbPath: string =
-  'mongodb://JSDaddy:jsdaddy2018@ds229909.mlab.com:29909/heroku_4k4jx5rj';
+const dbPath: string = process.env.DATABASE_PATH as string;
+const dbName: string = process.env.DATABASE_NAME as string;
 async function main(): Promise<void> {
   const spinner: ora.Ora = ora('Loading').start();
   try {
@@ -22,7 +22,7 @@ async function main(): Promise<void> {
       dbPath,
       { useNewUrlParser: true, useUnifiedTopology: true }
     );
-    const db: Db = connection.db('heroku_4k4jx5rj');
+    const db: Db = connection.db(dbName);
     spinner.text = 'Loading feedbacks';
     const feedbacks: IFeedbackFromJson[] = await readJSON(
       `output/json-feedbacks.json`

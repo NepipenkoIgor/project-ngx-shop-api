@@ -9,7 +9,7 @@ import {
   IJsonData,
   IProduct,
   ISubCategory,
-} from './iinterfaces';
+} from './interfaces';
 
 const fileName: string = 'limited.json';
 const asyncFileReader: (filename: string) => Promise<Buffer> = util.promisify(fs.readFile);
