@@ -25,7 +25,7 @@ async function bootstrap() {
     .build();
   // tslint:disable-next-line: typedef
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('', app, document);
+  SwaggerModule.setup('api', app, document);
   const configService: ConfigService = app.get(ConfigService);
   const port: string = configService.get('PORT') as string;
   await app.listen(process.env.PORT || port);
