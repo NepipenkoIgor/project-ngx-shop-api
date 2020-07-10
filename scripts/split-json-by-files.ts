@@ -11,7 +11,7 @@ import {
   ISubCategory,
 } from './interfaces';
 
-const fileName: string = 'limited.json';
+const fileName: string = 'jsons/limited.json';
 const asyncFileReader: (filename: string) => Promise<Buffer> = util.promisify(fs.readFile);
 // tslint:disable-next-line:no-any
 const asyncFileWriter: (filename: string, data: any, encode: string) => Promise<void> = util.promisify(fs.writeFile);

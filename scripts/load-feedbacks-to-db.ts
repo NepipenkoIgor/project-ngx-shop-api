@@ -9,23 +9,26 @@ import { Db } from 'mongodb';
 import { random } from 'lodash';
 
 const promisifiedFileRead: (
-  filename: string
+  filename: string,
 ) => Promise<Buffer> = util.promisify(fs.readFile);
 
-const dbPath: string = process.env.DATABASE_PATH as string;
 const dbName: string = process.env.DATABASE_NAME as string;
+const dbPath: string = `${process.env.DATABASE_PATH}/${dbName}` as string;
+
 async function main(): Promise<void> {
   const spinner: ora.Ora = ora('Loading').start();
+  let db: Db;
+  let connection: mongodb.MongoClient;
   try {
     spinner.text = 'Connect to db';
-    const connection: mongodb.MongoClient = await mongodb.MongoClient.connect(
+    connection = await mongodb.MongoClient.connect(
       dbPath,
-      { useNewUrlParser: true, useUnifiedTopology: true }
+      { useNewUrlParser: true, useUnifiedTopology: true },
     );
-    const db: Db = connection.db(dbName);
+    db = connection.db(dbName);
     spinner.text = 'Loading feedbacks';
     const feedbacks: IFeedbackFromJson[] = await readJSON(
-      `output/json-feedbacks.json`
+      `jsons/feedbacks.json`,
     );
     const products: IProduct[] = await db
       .collection('products')
@@ -45,14 +48,17 @@ async function main(): Promise<void> {
   } catch (e) {
     // tslint:disable-next-line:no-console
     console.log(e);
-  } finally {
-    spinner.stop();
+    process.exit();
   }
+  spinner.stop();
+  await connection.close();
 }
+
 main();
+
 async function readJSON<T>(fileName: string): Promise<T> {
   const buffer: Buffer = await promisifiedFileRead(
-    path.resolve(__dirname, fileName)
+    path.resolve(__dirname, fileName),
   );
   return JSON.parse(buffer.toString());
 }

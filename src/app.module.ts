@@ -17,7 +17,7 @@ import { CategoriesModule } from './categories/categories.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        uri: process.env.DATABASE || configService.get('DATABASE'),
+        uri: `${process.env.DATABASE_PATH}/${process.env.DATABASE_NAME}` || `${configService.get('DATABASE_PATH')}/${configService.get('DATABASE_NAME')}`,
       }),
     }),
     ProductsModule,
