@@ -86,6 +86,7 @@ async function loadSubCategories(
     for (const subCategory of subCategories) {
       await db.collection('subCategories').insertOne({
         ...subCategory,
+        
         _id: mongoose.Types.ObjectId(subCategory._id),
         category: mongoose.Types.ObjectId(subCategory.category),
       });

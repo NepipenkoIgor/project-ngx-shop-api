@@ -9,6 +9,7 @@ export interface IBaseCategory {
 
 export interface IBaseSubcategory {
   id: string;
+  slug: string;
   title: string;
   count: number;
   category: string;

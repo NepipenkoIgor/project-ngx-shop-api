@@ -29,7 +29,7 @@ async function main(): Promise<void> {
           const categoryId: mongoose.Types.ObjectId = mongoose.Types.ObjectId();
           const subcategories: ISubCategory[] = json.subcategories
             .filter(({ category, count }: IBaseSubcategory) => id === category && count > 0)
-            .map(({ title: subTitle, id: subId }: IBaseSubcategory) => {
+            .map(({ title: subTitle, id: subId, id: slug}: IBaseSubcategory) => {
               const _subId: mongoose.Types.ObjectId = mongoose.Types.ObjectId();
               const products1: IProduct[] = json.products
                 .filter(({ subcategory }: IBaseProduct) => subcategory === subId)
@@ -58,7 +58,7 @@ async function main(): Promise<void> {
                   },
                 );
               products = [...products, ...products1];
-              return { name: subTitle, _id: _subId, category: categoryId };
+              return { name: subTitle, _id: _subId, category: categoryId, slug };
             });
           subCategories = [...subCategories, ...subcategories];
           return { name: title, _id: categoryId };
