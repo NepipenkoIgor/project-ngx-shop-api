@@ -19,8 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "parse:feedbacks": "ts-node scripts/load-json-to-feedbacks.ts",
-    "parse:json": "ts-node scripts/split-json-by-files.ts"
+    "load:feedbacks": "ts-node scripts/load-feedbacks-to-db.ts",
+    "split:json": "ts-node scripts/split-json-by-files.ts",
+    "load:products": "ts-node scripts/load-json-to-db.ts",
+    "fill:db": "npm run split:json && npm run load:products && npm run load:feedbacks"
   },
   "dependencies": {
     "@nestjs/common": "^7.3.1",
@@ -31,6 +33,7 @@
     "@nestjs/swagger": "^4.5.12",
     "@types/mongoose": "^5.7.29",
     "class-transformer": "^0.2.3",
+    "lodash": "^4.17.15",
     "class-validator": "^0.12.2",
     "compression": "^1.7.4",
     "mongoose": "^5.9.21",
@@ -40,6 +43,7 @@
     "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.157",
     "@nestjs/cli": "^7.4.1",
     "@nestjs/schematics": "^7.0.1",
     "@nestjs/testing": "^7.3.1",

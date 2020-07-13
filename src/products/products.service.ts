@@ -44,7 +44,7 @@ export class ProductsService {
     return [products];
   }
   public async findProdcuts(
-    subCat: string | undefined,
+    slug: string | undefined,
     text: string | undefined,
     prices: string | undefined,
     brands: string | undefined
@@ -61,8 +61,8 @@ export class ProductsService {
     if (brandsArray) {
       regExpBrandsArray = brandsArray.map((e: string) => new RegExp(e, 'i'));
     }
-    if (subCat) {
-      querySubCat = { subCategory: Types.ObjectId(subCat) };
+    if (slug) {
+      querySubCat = { slug };
     }
     if (prices) {
       queryComparePrices = {
