@@ -1,7 +1,5 @@
-import { Types } from 'mongoose';
-
 export interface IProductQuery {
-  slug: string;
+  subCategory: string;
   price: {
     $gt: number;
     $lt: number;

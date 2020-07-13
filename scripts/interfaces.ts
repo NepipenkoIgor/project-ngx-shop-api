@@ -48,15 +48,15 @@ export interface ICategory {
   name: string;
 }
 export interface ISubCategory {
-  _id: mongoose.Types.ObjectId;
+  _id: string;
   name: string;
 }
 export interface IProduct {
-  _id: mongoose.Types.ObjectId;
+  _id: string;
   name: string;
   description: string;
   brand: string;
-  subCategory: mongoose.Types.ObjectId;
+  subCategory: string;
   characteristics: IBaseCharacteristics[];
   images: IBaseImage[];
   price: number;

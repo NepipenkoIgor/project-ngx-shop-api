@@ -1,7 +1,7 @@
 import { IProduct } from './interfaces/product.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { IProductQuery } from './interfaces/product-query.interface';
 @Injectable()
 export class ProductsService {
@@ -9,7 +9,7 @@ export class ProductsService {
     @InjectModel('Products') private readonly productModel: Model<IProduct>
   ) {}
 
-  public async suggestedProdcuts(): Promise<[IProduct[]]> {
+  public async suggestedProducts(): Promise<[IProduct[]]> {
     const products: IProduct[] = await this.productModel
       .aggregate([
         {
@@ -29,6 +29,7 @@ export class ProductsService {
                 $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
               },
             },
+            subCategory: { $first: '$subCategory' },
             images: { $first: '$images' },
             name: { $first: '$name' },
             price: { $first: '$price' },
@@ -43,8 +44,8 @@ export class ProductsService {
       .allowDiskUse(true);
     return [products];
   }
-  public async findProdcuts(
-    slug: string | undefined,
+  public async findProducts(
+    subCat: string | undefined,
     text: string | undefined,
     prices: string | undefined,
     brands: string | undefined
@@ -61,8 +62,8 @@ export class ProductsService {
     if (brandsArray) {
       regExpBrandsArray = brandsArray.map((e: string) => new RegExp(e, 'i'));
     }
-    if (slug) {
-      querySubCat = { slug };
+    if (subCat) {
+      querySubCat = { subCategory: subCat };
     }
     if (prices) {
       queryComparePrices = {
@@ -104,6 +105,7 @@ export class ProductsService {
             },
             images: { $first: '$images' },
             name: { $first: '$name' },
+            subCategory: { $first: '$subCategory' },
             price: { $first: '$price' },
             rating: {
               $avg: '$feedbacks.rate',
@@ -115,9 +117,9 @@ export class ProductsService {
       .allowDiskUse(true);
     return [products];
   }
-  public async findProdcut(_id: string): Promise<IProduct[]> {
+  public async findProduct(_id: string): Promise<IProduct[]> {
     return this.productModel.aggregate([
-      { $match: { _id: Types.ObjectId(_id) } },
+      { $match: { _id } },
       {
         $lookup: {
           as: 'feedbacks',
