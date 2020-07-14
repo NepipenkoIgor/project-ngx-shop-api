@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FeedbackDto } from './dtos/feedbacks.dto';
 import { IProduct } from 'products/interfaces/product.interface';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class FeedbacksService {
@@ -12,9 +12,11 @@ export class FeedbacksService {
     @InjectModel('Products') private readonly productModel: Model<IProduct>
   ) {}
   public async createFeedback(feedback: FeedbackDto): Promise<IProduct[]> {
+    console.log(feedback);
     await new this.feedbackModel(feedback).save();
+    console.log('123');
     return this.productModel.aggregate([
-      { $match: { _id: Types.ObjectId(feedback.product) } },
+      { $match: { _id: feedback.product } },
       {
         $lookup: {
           as: 'feedbacks',
