@@ -12,9 +12,7 @@ export class FeedbacksService {
     @InjectModel('Products') private readonly productModel: Model<IProduct>
   ) {}
   public async createFeedback(feedback: FeedbackDto): Promise<IProduct[]> {
-    console.log(feedback);
     await new this.feedbackModel(feedback).save();
-    console.log('123');
     return this.productModel.aggregate([
       { $match: { _id: feedback.product } },
       {

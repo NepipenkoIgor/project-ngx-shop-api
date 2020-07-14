@@ -36,11 +36,17 @@ export class ProductsController {
         prices,
         brands
       );
+      const allPrices: number[] = products[0].map(
+        (product: IProduct): number => product.price
+      );
       // tslint:disable-next-line: no-console
       return res.status(HttpStatus.OK).json({
         data: {
           items: products[0],
-          quantity: products[0].length,
+          prices: {
+            min: Math.min.apply(Math, allPrices),
+            max: Math.max.apply(Math, allPrices),
+          },
         },
         error: null,
       });
