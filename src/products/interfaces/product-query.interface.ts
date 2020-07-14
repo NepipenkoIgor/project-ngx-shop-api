@@ -1,7 +1,5 @@
-import { Types } from 'mongoose';
-
 export interface IProductQuery {
-  subCategory: Types.ObjectId;
+  subCategory: string;
   price: {
     $gt: number;
     $lt: number;

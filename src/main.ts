@@ -10,8 +10,9 @@ async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule, {
     cors: true,
   });
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('');
   app.use(compression());
+  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -25,7 +26,7 @@ async function bootstrap() {
     .build();
   // tslint:disable-next-line: typedef
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('', app, document);
   const configService: ConfigService = app.get(ConfigService);
   const port: string = configService.get('PORT') as string;
   await app.listen(process.env.PORT || port);

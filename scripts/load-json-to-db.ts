@@ -7,10 +7,10 @@ import * as ora from 'ora';
 import { Db } from 'mongodb';
 
 const promisifiedFileRead: (
-  filename: string,
+  filename: string
 ) => Promise<Buffer> = util.promisify(fs.readFile);
 const promisifiedReadDir: (
-  filename: string,
+  filename: string
 ) => Promise<string[]> = util.promisify(fs.readdir);
 
 const dbName: string = process.env.DATABASE_NAME as string;
@@ -22,12 +22,12 @@ async function main(): Promise<void> {
     spinner.text = 'Connect to db';
     const connection: mongodb.MongoClient = await mongodb.MongoClient.connect(
       dbPath,
-      { useNewUrlParser: true },
+      { useNewUrlParser: true }
     );
     const db: Db = connection.db(dbName);
 
     const categories: { name: string; _id: string }[] = await readJSON(
-      'output/json-categories.json',
+      'output/json-categories.json'
     );
     await loadCategories(db, categories, spinner);
 
@@ -39,7 +39,7 @@ async function main(): Promise<void> {
     await loadSubCategories(db, subCategories, spinner);
 
     const productsFileNames: string[] = await promisifiedReadDir(
-      path.resolve(__dirname, 'output'),
+      path.resolve(__dirname, 'output')
     );
     await loadProducts(db, productsFileNames, spinner);
   } catch (error) {
@@ -56,7 +56,7 @@ main();
 async function loadCategories(
   db: Db,
   categories: { name: string; _id: string }[],
-  spinner: ora.Ora,
+  spinner: ora.Ora
 ): Promise<void> {
   spinner.text = 'Loading categories';
   try {
@@ -78,8 +78,12 @@ async function loadCategories(
 // tslint:disable-next-line:max-line-length
 async function loadSubCategories(
   db: Db,
-  subCategories: { name: string; _id: string; category: string }[],
-  spinner: ora.Ora,
+  subCategories: {
+    name: string;
+    category: string;
+    _id: string;
+  }[],
+  spinner: ora.Ora
 ): Promise<void> {
   spinner.start();
   spinner.text = 'Loading subCategories';
@@ -87,7 +91,7 @@ async function loadSubCategories(
     for (const subCategory of subCategories) {
       await db.collection('subCategories').insertOne({
         ...subCategory,
-        _id: mongoose.Types.ObjectId(subCategory._id),
+        _id: subCategory._id,
         category: mongoose.Types.ObjectId(subCategory.category),
       });
     }
@@ -104,7 +108,7 @@ async function loadSubCategories(
 async function loadProducts(
   db: Db,
   productsFileNames: string[],
-  spinner: ora.Ora,
+  spinner: ora.Ora
 ): Promise<void> {
   spinner.start();
   spinner.text = 'Loading products';
@@ -115,8 +119,6 @@ async function loadProducts(
         if (!product.name || !product.price || !product.description) {
           continue;
         }
-        product._id = mongoose.Types.ObjectId(product._id);
-        product.subCategory = mongoose.Types.ObjectId(product.subCategory);
         await db.collection('products').insertOne(product);
       }
     }
@@ -132,7 +134,7 @@ async function loadProducts(
 
 async function readJSON<T>(fileName: string): Promise<T> {
   const buffer: Buffer = await promisifiedFileRead(
-    path.resolve(__dirname, fileName),
+    path.resolve(__dirname, fileName)
   );
   return JSON.parse(buffer.toString());
 }

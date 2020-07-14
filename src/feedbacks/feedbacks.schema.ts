@@ -7,7 +7,7 @@ export const feedbackSchema: mongoose.Schema = new mongoose.Schema({
   },
   product: {
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
   },
   rate: {
     required: true,
