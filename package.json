@@ -34,7 +34,7 @@
     "@nestjs/swagger": "^4.5.12",
     "@types/mongoose": "^5.7.29",
     "class-transformer": "^0.2.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "class-validator": "^0.12.2",
     "compression": "^1.7.4",
     "mongoose": "^5.9.21",
