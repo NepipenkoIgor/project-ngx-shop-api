@@ -10,7 +10,7 @@ async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule, {
     cors: true,
   });
-  app.setGlobalPrefix('');
+  app.setGlobalPrefix('api');
   app.use(compression());
 
   app.useGlobalPipes(
