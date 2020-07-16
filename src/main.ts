@@ -12,7 +12,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('');
   app.use(compression());
-
+  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
