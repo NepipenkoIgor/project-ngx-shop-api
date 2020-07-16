@@ -12,7 +12,6 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.use(compression());
-  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
