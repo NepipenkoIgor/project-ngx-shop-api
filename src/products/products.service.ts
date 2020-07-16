@@ -46,9 +46,9 @@ export class ProductsService {
   }
   public async findProducts(
     subCat: string | undefined,
-    text: string | undefined,
-    prices: string | undefined,
-    brands: string | undefined
+    text?: string | undefined,
+    prices?: string | undefined,
+    brands?: string | undefined
   ): Promise<[IProduct[]]> {
     let brandsArray: string[] = [];
     let regExpBrandsArray: RegExp[] = [];

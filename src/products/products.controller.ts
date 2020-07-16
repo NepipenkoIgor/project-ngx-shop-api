@@ -36,10 +36,12 @@ export class ProductsController {
         prices,
         brands
       );
-      const allPrices: number[] = products[0].map(
+      const productsForPrices: [
+        IProduct[]
+      ] = await this.productsService.findProducts(subCat);
+      const allPrices: number[] = productsForPrices[0].map(
         (product: IProduct): number => product.price
       );
-      // tslint:disable-next-line: no-console
       return res.status(HttpStatus.OK).json({
         data: {
           items: products[0],
