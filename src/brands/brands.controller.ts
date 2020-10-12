@@ -2,6 +2,9 @@ import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ProductsService } from 'products/products.service';
+import { BrandsPipe } from './brands.pipe';
+import { IPriceProductQuery } from 'products/interfaces/product-query.interface';
+import { IProduct } from 'products/interfaces/product.interface';
 
 @ApiTags('brands')
 @Controller('brands')
@@ -20,31 +23,23 @@ export class BrandsController {
   })
   public async findCategories(
     @Res() res: Response,
-    @Query('subCat') id: string | undefined,
-    @Query('prices') prices: string | undefined
+    @Query('subCat') subCategory: string,
+    @Query('prices', new BrandsPipe())
+    price: IPriceProductQuery
   ): Promise<Response> {
     try {
-      let brands: string[] = [];
-      // tslint:disable-next-line: typedef
-      const product = await this.productsService.findProducts(
-        id,
-        undefined,
-        prices,
-        undefined
-      );
-      // tslint:disable-next-line: no-any
-      const ids: string[] = product[0].map((item: any) => String(item._id));
-      // tslint:disable-next-line: typedef
-      for (let index = 0; index < ids.length; index++) {
-        // tslint:disable-next-line: no-any
-        const data: any = await this.productsService.findProduct(
-          String(ids[index])
+      const products: IProduct[] = await this.productsService.findProducts({
+        subCategory,
+        price,
+      });
+      const brands: (string | undefined)[] = products
+        .map((product: IProduct) => {
+          return product.brand;
+        })
+        .filter(
+          (x: string | undefined, i: number, a: (string | undefined)[]) =>
+            a.indexOf(x) === i
         );
-        const { brand } = data[0];
-        brands.push(brand);
-      }
-      // tslint:disable-next-line: typedef
-      brands = brands.filter((x, i, a) => a.indexOf(x) === i);
       return res.status(HttpStatus.OK).json({ data: brands, error: null });
     } catch (error) {
       return res

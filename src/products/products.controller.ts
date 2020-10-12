@@ -1,8 +1,10 @@
+import { BrandsPipe } from './../brands/brands.pipe';
 import { Controller, Get, HttpStatus, Param, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ProductsService } from './products.service';
 import { IProduct } from './interfaces/product.interface';
+import { IPriceProductQuery } from './interfaces/product-query.interface';
 
 @ApiTags('products')
 @Controller('products')
@@ -20,26 +22,30 @@ export class ProductsController {
   })
   @ApiQuery({ name: 'subCat', required: false, description: 'Subcategory ID' })
   @ApiQuery({ name: 'text', required: false, description: 'Search by name' })
-  @ApiQuery({ name: 'prices', required: false, description: '100,500' })
+  @ApiQuery({ name: 'price', required: false, description: '100,500' })
   @ApiQuery({ name: 'brands', required: false, description: 'apple,samsung' })
   public async findProducts(
     @Res() res: Response,
-    @Query('subCat') subCat: string | undefined,
+    @Query('subCat') subCategory: string,
     @Query('text') text: string | undefined,
-    @Query('prices') prices: string | undefined,
+    @Query('prices', new BrandsPipe()) price: IPriceProductQuery,
     @Query('brands') brands: string | undefined
   ): Promise<Response> {
     try {
-      const products: [IProduct[]] = await this.productsService.findProducts(
-        subCat,
-        text,
-        prices,
-        brands
+      const products: IProduct[] = await this.productsService.findProducts({
+        subCategory,
+        text: { $regex: text || '', $options: 'i' },
+        price,
+        brand: {
+          $in: brands
+            ? brands.split(',').map((e: string) => new RegExp(e, 'i'))
+            : [],
+        },
+      });
+      const productsForPrices: IProduct[] = await this.productsService.findProducts(
+        { subCategory }
       );
-      const productsForPrices: [
-        IProduct[]
-      ] = await this.productsService.findProducts(subCat);
-      const allPrices: number[] = productsForPrices[0].map(
+      const allPrices: number[] = productsForPrices.map(
         (product: IProduct): number => product.price
       );
       return res.status(HttpStatus.OK).json({
@@ -72,13 +78,11 @@ export class ProductsController {
   })
   public async findSuggestedProducts(@Res() res: Response): Promise<Response> {
     try {
-      const products: [
-        IProduct[]
-      ] = await this.productsService.suggestedProducts();
+      const products: IProduct[] = await this.productsService.suggestedProducts();
       return res.status(HttpStatus.OK).json({
         data: {
-          items: products[0],
-          quantity: products[0].length,
+          items: products,
+          quantity: products.length,
         },
         error: null,
       });

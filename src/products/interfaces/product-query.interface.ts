@@ -1,9 +1,11 @@
 export interface IProductQuery {
   subCategory: string;
-  price: {
-    $gt: number;
-    $lt: number;
-  };
-  name: { $regex: string; $options: string };
-  brand: { $in: RegExp[] };
+  price?: IPriceProductQuery;
+  text?: { $regex: string; $options: string };
+  brand?: { $in: RegExp[] };
+}
+
+export interface IPriceProductQuery {
+  $gt?: number;
+  $lt?: number;
 }

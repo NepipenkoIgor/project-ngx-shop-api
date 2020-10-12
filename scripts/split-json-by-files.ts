@@ -29,6 +29,7 @@ async function main(): Promise<void> {
     const json: IJsonData = JSON.parse(buffer.toString()) as IJsonData;
     let subCategories: ISubCategory[] = [];
     let products: IProduct[] = [];
+
     const categories: ICategory[] = json.categories
       .filter(({ count }: IBaseCategory) => count > 0)
       .map(

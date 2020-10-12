@@ -10,7 +10,7 @@ export class CategoriesService {
   ) {}
 
   public async findCategories(): Promise<ICategory[]> {
-    return this.categoryModel.aggregate([
+    return await this.categoryModel.aggregate([
       {
         $lookup: {
           as: 'subCategories',
@@ -21,10 +21,11 @@ export class CategoriesService {
       },
       { $unwind: { path: '$subCategories', preserveNullAndEmptyArrays: true } },
       {
-        $group: {
-          _id: '$_id',
-          name: { $first: '$name' },
-          subCategories: { $push: '$subCategories' },
+        $project: {
+          _id: 1,
+          name: 1,
+          'subCategories._id': 1,
+          'subCategories.name': 1,
         },
       },
     ]);

@@ -16,14 +16,8 @@ async function main(): Promise<void> {
       useUnifiedTopology: true,
     });
     db = connection.db(dbName);
-    spinner.text = 'Deleting products';
-    await db.collection('products').remove({});
-    spinner.text = 'Deleting feedbacks';
-    await db.collection('feedbacks').remove({});
-    spinner.text = 'Deleting categories';
-    await db.collection('categories').remove({});
-    spinner.text = 'Deleting subcategories';
-    await db.collection('subCategories').remove({});
+    spinner.text = 'Deleting...';
+    await db.dropDatabase();
   } catch (e) {
     // tslint:disable-next-line:no-console
     console.log(e);

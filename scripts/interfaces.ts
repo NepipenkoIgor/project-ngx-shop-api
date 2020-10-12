@@ -80,3 +80,8 @@ export interface IFeedback {
   rate: number;
   advantages?: string;
 }
+
+export interface IBrand {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+}
